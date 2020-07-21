@@ -1,0 +1,22 @@
+{
+  "name": "ozitag/tager-backend-http-cache",
+  "description": "Tager HTTP Cache",
+  "license": "MIT",
+  "homepage": "https://github.com/ozitag/tager-backend-pages",
+  "authors": [
+    {
+      "name": "Vital Ozierski <v.ozierski@ozitag.com>",
+      "email": "v.ozierski@ozitag.com",
+      "homepage": "https://ozitag.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "ozitag/tager-backend-core": "^1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "OZiTAG\\Tager\\Backend\\HttpCache\\": "src"
+    }
+  }
+}
