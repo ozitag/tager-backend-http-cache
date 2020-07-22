@@ -104,7 +104,7 @@ class HttpCache
      * @param string $filename
      * @return string
      */
-    protected function aliasFilename(?string $filename) : string
+    protected function aliasFilename(?string $filename): string
     {
         return $filename ?: 'pc__index__pc';
     }
@@ -137,9 +137,9 @@ class HttpCache
             $f = fopen($path . '/' . $file, 'w+');
             fwrite($f, $response->getContent());
             fclose($f);
-        } catch (Exception $ex) {}
+        } catch (Exception $ex) {
+        }
     }
-
 
 
     /**
@@ -151,15 +151,22 @@ class HttpCache
      */
     public function shouldCache(Request $request, Response $response): bool
     {
-        if($request->attributes->has('http-cache.disable')) {
+        if (!config('tager-http-cache.enabled')) {
             return false;
         }
-        if($request->getMethod() !== 'GET') {
+
+        if ($request->attributes->has('http-cache.disable')) {
             return false;
         }
-        if($response->getStatusCode() !== 200) {
+
+        if ($request->getMethod() !== 'GET') {
             return false;
         }
+
+        if ($response->getStatusCode() !== 200) {
+            return false;
+        }
+
         return true;
     }
 }
