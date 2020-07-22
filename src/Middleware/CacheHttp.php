@@ -1,12 +1,12 @@
 <?php
 
-namespace OZiTAG\Tager\Backend\HttpCache;
+namespace OZiTAG\Tager\Backend\HttpCache\Middleware;
 
 use Closure;
+use OZiTAG\Tager\Backend\HttpCache\HttpCache;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-class HttpCacheMiddleware
+class CacheHttp
 {
     /**
      * The cache instance.
@@ -36,22 +36,10 @@ class HttpCacheMiddleware
     {
         $response = $next($request);
 
-        if ($this->shouldCache($request, $response)) {
+        if ($this->cache->shouldCache($request, $response)) {
             $this->cache->cacheRequest($request, $response);
         }
 
         return $response;
-    }
-
-    /**
-     * Determines whether the given request/response pair should be cached.
-     *
-     * @param  \Symfony\Component\HttpFoundation\Request  $request
-     * @param  \Symfony\Component\HttpFoundation\Response  $response
-     * @return bool
-     */
-    protected function shouldCache(Request $request, Response $response)
-    {
-        return $request->isMethod('GET') && $response->getStatusCode() == 200;
     }
 }

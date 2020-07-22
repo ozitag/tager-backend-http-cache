@@ -2,7 +2,7 @@
 
 namespace OZiTAG\Tager\Backend\HttpCache;
 
-use Illuminate\Http\JsonResponse;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -32,6 +32,7 @@ class HttpCache
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Http\Response $response
      * @return array
+     * @throws Exception
      */
     protected function getDirectoryAndFileNames($request, $response)
     {
@@ -53,10 +54,9 @@ class HttpCache
     /**
      * Gets the path to the cache directory.
      *
-     * @param string ...$paths
      * @return string
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getCachePath()
     {
@@ -104,7 +104,7 @@ class HttpCache
      * @param string $filename
      * @return string
      */
-    protected function aliasFilename($filename)
+    protected function aliasFilename(?string $filename) : string
     {
         return $filename ?: 'pc__index__pc';
     }
@@ -114,25 +114,52 @@ class HttpCache
      *
      * Currently, only JSON and HTML are supported.
      *
+     * @param Response $response
      * @return string
      */
-    protected function guessFileExtension($response)
+    protected function guessFileExtension(Response $response): string
     {
-        if ($response instanceof JsonResponse) {
-            return 'json';
-        }
-
-        return 'html';
+        return $response->headers->get('Content-Type') === 'application/json' ? 'json' : 'html';
     }
 
-    public function cacheRequest(Request $request, Response $response)
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @throws Exception
+     */
+    public function cacheRequest(Request $request, Response $response): void
     {
-        list($path, $file) = $this->getDirectoryAndFileNames($request, $response);
+        try {
+            list($path, $file) = $this->getDirectoryAndFileNames($request, $response);
 
-        $this->checkFolder($path);
+            $this->checkFolder($path);
 
-        $f = fopen($path . '/' . $file, 'w+');
-        fwrite($f, $response->getContent());
-        fclose($f);
+            $f = fopen($path . '/' . $file, 'w+');
+            fwrite($f, $response->getContent());
+            fclose($f);
+        } catch (Exception $ex) {}
+    }
+
+
+
+    /**
+     * Determines whether the given request/response pair should be cached.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @return bool
+     */
+    public function shouldCache(Request $request, Response $response): bool
+    {
+        if($request->attributes->has('http-cache.disable')) {
+            return false;
+        }
+        if($request->getMethod() !== 'GET') {
+            return false;
+        }
+        if($response->getStatusCode() !== 200) {
+            return false;
+        }
+        return true;
     }
 }
