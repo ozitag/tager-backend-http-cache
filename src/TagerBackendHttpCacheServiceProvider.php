@@ -4,6 +4,7 @@ namespace OZiTAG\Tager\Backend\HttpCache;
 
 use Illuminate\Support\ServiceProvider;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
+use OZiTAG\Tager\Backend\HttpCache\Console\ClearCacheCommand;
 
 class TagerBackendHttpCacheServiceProvider extends ServiceProvider
 {
@@ -36,7 +37,7 @@ class TagerBackendHttpCacheServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
-                //
+                ClearCacheCommand::class
             ]);
         }
     }

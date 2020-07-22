@@ -32,7 +32,7 @@ class HttpCache
     /**
      * Sets the container instance.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param \Illuminate\Contracts\Container\Container $container
      * @return $this
      */
     public function setContainer(\Illuminate\Contracts\Container\Container $container)
@@ -204,11 +204,15 @@ class HttpCache
         return true;
     }
 
-    public function clear($namespace)
+    public function clear($namespace = null)
     {
         $cacheFolder = $this->getDataFolder();
 
-        $this->filesystem->delete($cacheFolder . '/' . $namespace . '.json');
-        $this->filesystem->deleteDirectory($cacheFolder . '/' . $namespace);
+        if (is_null($namespace)) {
+            $this->filesystem->deleteDirectory($cacheFolder);
+        } else {
+            $this->filesystem->delete($cacheFolder . '/' . $namespace . '.json');
+            $this->filesystem->deleteDirectory($cacheFolder . '/' . $namespace, true);
+        }
     }
 }
