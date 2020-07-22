@@ -3,11 +3,17 @@
 namespace OZiTAG\Tager\Backend\HttpCache;
 
 use Exception;
+use League\Flysystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class HttpCache
 {
+    public function __construct(Filesystem $filesystem)
+    {
+        
+    }
+
     private function checkFolder($folderPath)
     {
         if (!is_dir($folderPath)) {
@@ -168,5 +174,10 @@ class HttpCache
         }
 
         return true;
+    }
+
+    public function clear($namespace)
+    {
+        $cacheFolder = $this->getDataFolder();
     }
 }
