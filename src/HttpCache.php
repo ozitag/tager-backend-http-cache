@@ -19,7 +19,7 @@ class HttpCache
 
     private function getDataFolder()
     {
-        $folder = storage_path('app/http-cache');
+        $folder = storage_path('app/public/http-cache');
 
         $this->checkFolder($folder);
 
