@@ -9,11 +9,37 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HttpCache
 {
-    private $filesystem;
+    /**
+     * The filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
+
+    /**
+     * The container instance.
+     *
+     * @var \Illuminate\Contracts\Container\Container|null
+     */
+    protected $container = null;
+
 
     public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
+    }
+
+    /**
+     * Sets the container instance.
+     *
+     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @return $this
+     */
+    public function setContainer(\Illuminate\Contracts\Container\Container $container)
+    {
+        $this->container = $container;
+
+        return $this;
     }
 
     private function checkFolder($folderPath)
@@ -181,5 +207,8 @@ class HttpCache
     public function clear($namespace)
     {
         $cacheFolder = $this->getDataFolder();
+
+        $this->filesystem->delete($cacheFolder . '/' . $namespace . '.json');
+        $this->filesystem->deleteDirectory($cacheFolder . '/' . $namespace);
     }
 }
