@@ -19,7 +19,7 @@ class HttpCache
 
     private function getDataFolder()
     {
-        $folder = realpath(__DIR__ . '/../../../../storage/app/tager-data');
+        $folder = storage_path('app/http-cache');
 
         $this->checkFolder($folder);
 
@@ -132,7 +132,7 @@ class HttpCache
         $this->checkFolder($path);
 
         $f = fopen($path . '/' . $file, 'w+');
-        fwrite($f, json_encode($response->getContent()));
+        fwrite($f, $response->getContent());
         fclose($f);
     }
 }
