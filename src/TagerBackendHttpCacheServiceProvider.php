@@ -4,9 +4,6 @@ namespace OZiTAG\Tager\Backend\HttpCache;
 
 use Illuminate\Support\ServiceProvider;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
-use OZiTAG\Tager\Backend\Mail\Commands\FlushMailTemplatesCommand;
-use OZiTAG\Tager\Backend\Banners\Commands\FlushBannersCommand;
-use OZiTAG\Tager\Backend\Settings\Commands\FlushSettingsCommand;
 
 class TagerBackendHttpCacheServiceProvider extends ServiceProvider
 {
@@ -28,7 +25,7 @@ class TagerBackendHttpCacheServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->singleton(HttpCache::class, function () {
-            $instance = new Cache($this->app->make('files'));
+            $instance = new HttpCache($this->app->make('files'));
 
             return $instance->setContainer($this->app);
         });
