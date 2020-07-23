@@ -11,9 +11,6 @@
       "role": "Developer"
     }
   ],
-  "require": {
-    "ozitag/tager-backend-core": "^1.1"
-  },
   "autoload": {
     "psr-4": {
       "OZiTAG\\Tager\\Backend\\HttpCache\\": "src"
