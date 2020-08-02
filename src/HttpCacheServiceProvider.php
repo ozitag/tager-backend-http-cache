@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use OZiTAG\Tager\Backend\HttpCache\Console\ClearCacheCommand;
 
-class TagerBackendHttpCacheServiceProvider extends ServiceProvider
+class HttpCacheServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
