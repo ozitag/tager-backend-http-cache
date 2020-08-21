@@ -75,8 +75,8 @@ class HttpCache
         $filename = $this->aliasFilename(array_pop($segments));
         $extension = $this->guessFileExtension($response);
 
-        if (!empty($request->getQueryString())) {
-            $filename .= '?' . $request->getQueryString();
+        if (!empty($request->server->get('QUERY_STRING'))) {
+            $filename .= '?' . $request->server->get('QUERY_STRING');
         }
 
         $file = "{$filename}.{$extension}";
