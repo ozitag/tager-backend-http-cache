@@ -45,7 +45,7 @@ class HttpCache
     private function checkFolder($folderPath)
     {
         if (!is_dir($folderPath)) {
-            mkdir($folderPath, 0755);
+            $result = @mkdir($folderPath, 0755, true);
         }
 
         return $folderPath;
