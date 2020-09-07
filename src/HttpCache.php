@@ -100,7 +100,7 @@ class HttpCache
             throw new Exception('Cache path not set.');
         }
 
-        return $this->join(array_merge([$base], ['GET'], func_get_args()));
+        return $this->join(array_merge([$base], func_get_args()));
     }
 
     /**
