@@ -212,6 +212,7 @@ class HttpCache
             $this->filesystem->deleteDirectory($cacheFolder);
         } else {
             $this->filesystem->delete($cacheFolder . '/' . $namespace . '.json');
+            File::delete(File::glob($cacheFolder . '/' . $namespace . '?*'));
             $this->filesystem->deleteDirectory($cacheFolder . '/' . $namespace, true);
         }
     }
