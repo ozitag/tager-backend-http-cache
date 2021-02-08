@@ -80,9 +80,16 @@ class HttpCache
             $filename .= '?' . $request->server->get('QUERY_STRING');
         }
 
+        $folder = $this->getCachePath(implode('/', $segments));
         $file = "{$filename}.{$extension}";
 
-        return [$this->getCachePath(implode('/', $segments)), $file];
+        $p = strrpos($file, '/');
+        if ($p !== false) {
+            $folder .= '/' . substr($file, 0, $p);
+            $file = substr($file, $p + 1);
+        }
+
+        return [$folder, $file];
     }
 
 
@@ -170,9 +177,11 @@ class HttpCache
             $this->checkFolder($path);
 
             $f = fopen($path . '/' . $file, 'w+');
-            fwrite($f, $response->getContent());
+            $data = fwrite($f, $response->getContent());
             fclose($f);
         } catch (Exception $ex) {
+            print_r($ex->getMessage());
+            exit;
         }
     }
 
@@ -215,8 +224,6 @@ class HttpCache
             if (substr($namespace, 0, 1) == '/') {
                 $namespace = substr($namespace, 1);
             }
-
-            $namespace = str_replace('/', '%2f', substr($namespace, $p + 1));
 
             $this->filesystem->delete($cacheFolder . '/' . $namespace . '.json');
             File::delete(File::glob($cacheFolder . '/' . $namespace . '?*'));
