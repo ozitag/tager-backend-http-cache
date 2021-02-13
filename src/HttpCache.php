@@ -180,8 +180,7 @@ class HttpCache
             $data = fwrite($f, $response->getContent());
             fclose($f);
         } catch (Exception $ex) {
-            print_r($ex->getMessage());
-            exit;
+
         }
     }
 
