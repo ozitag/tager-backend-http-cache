@@ -177,7 +177,7 @@ class HttpCache
             $this->checkFolder($path);
 
             $f = fopen($path . '/' . $file, 'w+');
-            $data = fwrite($f, $response->getContent());
+            fwrite($f, $response->getContent());
             fclose($f);
         } catch (Exception $ex) {
 
@@ -213,20 +213,23 @@ class HttpCache
         return true;
     }
 
-    public function clear($namespace = null)
+    public function clear(string|array|null $namespace = null)
     {
         $cacheFolder = $this->getDataFolder();
 
         if (is_null($namespace)) {
             $this->filesystem->deleteDirectory($cacheFolder);
         } else {
-            if (substr($namespace, 0, 1) == '/') {
-                $namespace = substr($namespace, 1);
-            }
+            $namespaces = is_array($namespace) ? $namespace : [$namespace];
+            foreach ($namespaces as $namespace) {
+                if (substr($namespace, 0, 1) == '/') {
+                    $namespace = substr($namespace, 1);
+                }
 
-            $this->filesystem->delete($cacheFolder . '/' . $namespace . '.json');
-            File::delete(File::glob($cacheFolder . '/' . $namespace . '?*'));
-            $this->filesystem->deleteDirectory($cacheFolder . '/' . $namespace, true);
+                $this->filesystem->delete($cacheFolder . '/' . $namespace . '.json');
+                File::delete(File::glob($cacheFolder . '/' . $namespace . '?*'));
+                $this->filesystem->deleteDirectory($cacheFolder . '/' . $namespace, true);
+            }
         }
     }
 }
