@@ -5,6 +5,7 @@ namespace OZiTAG\Tager\Backend\HttpCache;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -213,12 +214,36 @@ class HttpCache
         return true;
     }
 
+    private function clearFolder($directory, $preserve = false)
+    {
+        if (!$this->filesystem->isDirectory($directory)) {
+            return false;
+        }
+
+        $items = new \FilesystemIterator($directory);
+        foreach ($items as $item) {
+            if ($item->isDir() && !$item->isLink()) {
+                $this->filesystem->deleteDirectory($item->getPathname());
+            } else {
+                if (substr($item->getPathname(), strlen($item->getPathname()) - strlen('.gitignore')) != '.gitignore') {
+                    $this->filesystem->delete($item->getPathname());
+                }
+            }
+        }
+
+        if (!$preserve) {
+            @rmdir($directory);
+        }
+
+        return true;
+    }
+
     public function clear(string|array|null $namespace = null)
     {
         $cacheFolder = $this->getDataFolder();
 
         if (is_null($namespace)) {
-            $this->filesystem->deleteDirectory($cacheFolder);
+            $this->clearFolder($cacheFolder, true);
         } else {
             $namespaces = is_array($namespace) ? $namespace : [$namespace];
             foreach ($namespaces as $namespace) {
