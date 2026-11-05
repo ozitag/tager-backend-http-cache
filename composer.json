@@ -11,6 +11,9 @@
       "role": "Developer"
     }
   ],
+  "require": {
+    "php": "^8.5"
+  },
   "autoload": {
     "psr-4": {
       "OZiTAG\\Tager\\Backend\\HttpCache\\": "src"
